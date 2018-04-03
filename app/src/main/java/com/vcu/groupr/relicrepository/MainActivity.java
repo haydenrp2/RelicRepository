@@ -1,4 +1,4 @@
-package com.vcu.ryanhayden.relicrepository;
+package com.vcu.groupr.relicrepository;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.vcu.ryanhayden.relicrepository;
+package com.vcu.groupr.relicrepository;
 
 import org.junit.Test;
 
