@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Catalog"></activity>
+        <activity android:name=".CatalogAdd"></activity>
     </application>
 
 </manifest>

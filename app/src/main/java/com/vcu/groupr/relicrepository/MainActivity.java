@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
         mCatalogButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                System.out.println("test");
                 Intent intent = new Intent(MainActivity.this,Catalog.class);
                 startActivity(intent);
             }
