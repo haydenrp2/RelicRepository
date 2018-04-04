@@ -1,9 +1,10 @@
 package com.vcu.groupr.relicrepository;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 //REQUIRED: artifact name. OPTIONAL: artifact type, description, age, location found, date found, price, URL for selling website
-public class Artifact {
+public class Artifact implements Serializable {
     private String name;
     private String type;
     private String description;

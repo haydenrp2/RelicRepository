@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.ChildEventListener;
@@ -16,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Catalog extends AppCompatActivity{
 
@@ -67,5 +70,15 @@ public class Catalog extends AppCompatActivity{
             public void onCancelled(DatabaseError databaseError) {}
         };
         mArtifactsDatabaseReference.addChildEventListener(mChildEventListener);
+
+        mArtifactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Artifact artifact = (Artifact) parent.getItemAtPosition(position);
+                Intent intent = new Intent(Catalog.this, CatalogItem.class);
+                intent.putExtra("artifact",artifact);
+                startActivity(intent);
+            }
+        });
     }
 }
