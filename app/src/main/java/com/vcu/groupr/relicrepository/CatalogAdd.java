@@ -42,6 +42,7 @@ public class CatalogAdd extends AppCompatActivity{
                 double price = Double.parseDouble(readField(R.id.price));
                 String url = readField(R.id.url);
                 Artifact artifact = new Artifact(name,type,description,age,location,date,price,url);
+                if(artifact==null)System.out.println("test");
                 mArtifactsDatabaseReference.push().setValue(artifact);
                 onBackPressed();
             }
