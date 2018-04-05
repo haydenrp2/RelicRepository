@@ -1,8 +1,10 @@
 package com.vcu.groupr.relicrepository;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -13,6 +15,7 @@ import com.google.firebase.database.Query;
 public class CatalogItem extends AppCompatActivity{
 
     private Button mDeleteButton;
+    private Button mEditButton;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mArtifactsDatabaseReference;
     private String mKey;
@@ -21,7 +24,7 @@ public class CatalogItem extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.catalog_item);
-        Artifact artifact = (Artifact)getIntent().getSerializableExtra("artifact");
+        final Artifact artifact = (Artifact)getIntent().getSerializableExtra("artifact");
         getTextView(R.id.textView1).setText(artifact.getName());
         getTextView(R.id.textView2).setText(artifact.getType());
         getTextView(R.id.textView3).setText(artifact.getDescription());
@@ -32,6 +35,7 @@ public class CatalogItem extends AppCompatActivity{
         getTextView(R.id.textView8).setText(artifact.getUrl());
 
         mDeleteButton = (Button) findViewById(R.id.deleteButton);
+        mEditButton = (Button) findViewById(R.id.editButton);
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mArtifactsDatabaseReference = mFirebaseDatabase.getReference().child("artifacts");
         mKey = getIntent().getStringExtra("key");
@@ -41,6 +45,15 @@ public class CatalogItem extends AppCompatActivity{
             public void onClick(View v) {
                 mArtifactsDatabaseReference.child(mKey).removeValue();
                 onBackPressed();
+            }
+        });
+        mEditButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CatalogItem.this, CatalogEdit.class);
+                intent.putExtra("artifact",artifact);
+                intent.putExtra("key",mKey);
+                startActivity(intent);
             }
         });
     }
