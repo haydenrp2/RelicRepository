@@ -16,7 +16,6 @@ public class CatalogAdd extends AppCompatActivity{
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mArtifactsDatabaseReference;
-    private ChildEventListener mChildEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

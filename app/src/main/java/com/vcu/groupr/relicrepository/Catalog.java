@@ -18,13 +18,14 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Catalog extends AppCompatActivity{
 
     private ListView mArtifactListView;
     private ArtifactAdapter mArtifactAdapter;
     private Button mAddButton;
+
+
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mArtifactsDatabaseReference;
@@ -43,6 +44,7 @@ public class Catalog extends AppCompatActivity{
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
         List<Artifact> artifacts = new ArrayList<>();
+        final List<String> mKeys = new ArrayList<String>();
         mArtifactsDatabaseReference = mFirebaseDatabase.getReference().child("artifacts");
         mArtifactAdapter = new ArtifactAdapter(this,R.layout.item_catalog,artifacts);
         mArtifactListView.setAdapter(mArtifactAdapter);
@@ -57,14 +59,39 @@ public class Catalog extends AppCompatActivity{
         mChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Artifact friendlyMessage = dataSnapshot.getValue(Artifact.class);
-                mArtifactAdapter.add(friendlyMessage);
+                String key = dataSnapshot.getKey();
+                Artifact artifact = dataSnapshot.getValue(Artifact.class);
+                if(s == null){
+                    mArtifactAdapter.insert(artifact, 0);
+                    mKeys.add(0, key);
+                } else {
+                    int previousIndex = mKeys.indexOf(s);
+                    int nextIndex = previousIndex + 1;
+                    if(nextIndex == mArtifactAdapter.getCount()){
+                        mArtifactAdapter.add(artifact);
+                        mKeys.add(key);
+                    } else {
+                        mArtifactAdapter.insert(artifact,nextIndex);
+                        mKeys.add(nextIndex,key);
+                    }
+                }
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                String key = dataSnapshot.getKey();
+                Artifact artifact = dataSnapshot.getValue(Artifact.class);
+                int index = mKeys.indexOf(key);
+                Artifact remove = mArtifactAdapter.getItem(index);
+                mArtifactAdapter.remove(remove);
+                mArtifactAdapter.insert(artifact,index);
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                String key = dataSnapshot.getKey();
+                int index = mKeys.indexOf(key);
+                Artifact artifact = dataSnapshot.getValue(Artifact.class);
+                mArtifactAdapter.remove(artifact);
+                mKeys.remove(index);
             }
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
             public void onCancelled(DatabaseError databaseError) {}
@@ -77,6 +104,7 @@ public class Catalog extends AppCompatActivity{
                 Artifact artifact = (Artifact) parent.getItemAtPosition(position);
                 Intent intent = new Intent(Catalog.this, CatalogItem.class);
                 intent.putExtra("artifact",artifact);
+                intent.putExtra("key",mKeys.get(position));
                 startActivity(intent);
             }
         });
