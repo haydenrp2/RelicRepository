@@ -26,9 +26,9 @@ public class ArtifactAdapter extends ArrayAdapter<Artifact> {
 
         TextView authorTextView = (TextView) convertView.findViewById(R.id.nameTextView);
 
-        Artifact message = getItem(position);
+        Artifact artifact = getItem(position);
 
-        authorTextView.setText(message.getName());
+        authorTextView.setText(artifact.getName());
 
         return convertView;
     }
