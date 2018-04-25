@@ -14,7 +14,7 @@ public class CalendarAdd extends AppCompatActivity {
     Button mSubmitButton;
 
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mArtifactsDatabaseReference;
+    private DatabaseReference mEventsDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,23 +25,19 @@ public class CalendarAdd extends AppCompatActivity {
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
-        mArtifactsDatabaseReference = mFirebaseDatabase.getReference().child("artifacts");
+        mEventsDatabaseReference = mFirebaseDatabase.getReference().child("events");
 
         // Send button sends a message and clears the EditText
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name = readField(R.id.artifactName);
-                String type = readField(R.id.artifactType);
-                String description = readField(R.id.description);
-                int age = Integer.parseInt(readField(R.id.artifactAge));
-                String location = readField(R.id.locationFound);
+                String organizer = readField(R.id.organizer);
                 String date = readField(R.id.date);
-                double price = Double.parseDouble(readField(R.id.price));
-                String url = readField(R.id.url);
-                Artifact artifact = new Artifact(name,type,description,age,location,date,price,url);
-                if(artifact==null)System.out.println("test");
-                mArtifactsDatabaseReference.push().setValue(artifact);
+                String time = readField(R.id.time);
+                String location = readField(R.id.location);
+                String notes = readField(R.id.notes);
+                Event event = new Event(organizer,date,time,location,notes);
+                mEventsDatabaseReference.push().setValue(event);
                 onBackPressed();
             }
         });
