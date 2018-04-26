@@ -20,6 +20,7 @@
         <activity android:name=".CatalogAdd"></activity>
         <activity android:name=".CatalogItem"></activity>
         <activity android:name=".CatalogEdit"></activity>
+        <activity android:name=".UserProfile"></activity>
     </application>
 
 </manifest>
