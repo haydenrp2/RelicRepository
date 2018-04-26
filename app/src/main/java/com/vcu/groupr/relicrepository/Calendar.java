@@ -2,12 +2,13 @@ package com.vcu.groupr.relicrepository;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.ChildEventListener;
@@ -19,38 +20,39 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Catalog extends AppCompatActivity{
+public class Calendar extends AppCompatActivity {
 
+    CalendarView mCalendarView;
     private ListView mArtifactListView;
     private ArtifactAdapter mArtifactAdapter;
-    private Button mAddButton;
+    private Button mAddEvent;
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mArtifactsDatabaseReference;
     private ChildEventListener mChildEventListener;
     private FirebaseListAdapter<Artifact> adapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.catalog);
+        setContentView(R.layout.calendar);
 
-        mArtifactListView = (ListView) findViewById(R.id.listView);
-        mAddButton = (Button) findViewById(R.id.addButton);
+        mCalendarView = (CalendarView) findViewById(R.id.calendarView);
+        mArtifactListView = (ListView) findViewById(R.id.calendarList);
+        mAddEvent = (Button) findViewById(R.id.addEvent);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
         List<Artifact> artifacts = new ArrayList<>();
         final List<String> mKeys = new ArrayList<String>();
-        mArtifactsDatabaseReference = mFirebaseDatabase.getReference().child("artifacts");
+        mArtifactsDatabaseReference = mFirebaseDatabase.getReference().child("events");
         mArtifactAdapter = new ArtifactAdapter(this,R.layout.item_catalog,artifacts);
         mArtifactListView.setAdapter(mArtifactAdapter);
 
-        mAddButton.setOnClickListener(new View.OnClickListener(){
+        mAddEvent.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Catalog.this,CatalogAdd.class);
+                Intent intent = new Intent(Calendar.this,CatalogAdd.class);
                 startActivity(intent);
             }
         });
@@ -100,10 +102,17 @@ public class Catalog extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Artifact artifact = (Artifact) parent.getItemAtPosition(position);
-                Intent intent = new Intent(Catalog.this, CatalogItem.class);
+                Intent intent = new Intent(Calendar.this, CalendarEvent.class);
                 intent.putExtra("artifact",artifact);
                 intent.putExtra("key",mKeys.get(position));
                 startActivity(intent);
+            }
+        });
+
+        mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                String date = (month + 1) + "/" + dayOfMonth + "/" + year;
             }
         });
     }

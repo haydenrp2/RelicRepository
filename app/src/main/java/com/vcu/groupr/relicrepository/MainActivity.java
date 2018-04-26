@@ -18,6 +18,7 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     private Button mCatalogButton;
+    private Button mCalendarButton;
 
     //Authentication Variables
     private FirebaseAuth mFirebaseAuth;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         Button mSignOutButton = (Button) findViewById(R.id.signOut);
 
 
+        mCalendarButton = (Button) findViewById(R.id.calendarButton);
 
         mCatalogButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -46,7 +48,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        mCalendarButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,Calendar.class);
+                startActivity(intent);
+            }
+        });
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
