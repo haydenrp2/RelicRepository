@@ -1,5 +1,6 @@
 package com.vcu.groupr.relicrepository;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -50,7 +51,13 @@ public class CatalogEdit extends AppCompatActivity {
                 Artifact artifact = new Artifact(name,type,description,age,location,date,price,url);
                 mArtifactsDatabaseReference.child(mKey).removeValue();
                 mArtifactsDatabaseReference.push().setValue(artifact);
-                onBackPressed();
+                Intent intent = new Intent(CatalogEdit.this, CatalogItem.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("artifact",artifact);
+                intent.putExtra("key",mKey);
+                startActivity(intent);
+                CatalogEdit.this.finish();
+                return;
             }
         });
     }

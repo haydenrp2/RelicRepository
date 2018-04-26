@@ -103,7 +103,6 @@ public class Calendar extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Event event = (Event) parent.getItemAtPosition(position);
                 Intent intent = new Intent(Calendar.this, CalendarEvent.class);
-                System.out.println(event == null);
                 intent.putExtra("event",event);
                 intent.putExtra("key",mKeys.get(position));
                 startActivity(intent);

@@ -45,7 +45,7 @@ public class CalendarEvent extends AppCompatActivity{
         mEditButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CalendarEvent.this, CalenderEdit.class);
+                Intent intent = new Intent(CalendarEvent.this, CalendarEdit.class);
                 intent.putExtra("event",event);
                 intent.putExtra("key",mKey);
                 startActivity(intent);

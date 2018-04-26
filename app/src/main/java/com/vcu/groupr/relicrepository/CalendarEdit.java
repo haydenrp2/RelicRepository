@@ -1,5 +1,6 @@
 package com.vcu.groupr.relicrepository;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,7 +11,7 @@ import android.widget.TextView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class CalenderEdit extends AppCompatActivity {
+public class CalendarEdit extends AppCompatActivity {
 
     private Button mSubmitButton;
     private FirebaseDatabase mFirebaseDatabase;
@@ -44,7 +45,13 @@ public class CalenderEdit extends AppCompatActivity {
                 Event event = new Event(organizer,date,time,location,notes);
                 mEventsDatabaseReference.child(mKey).removeValue();
                 mEventsDatabaseReference.push().setValue(event);
-                onBackPressed();
+                Intent intent = new Intent(CalendarEdit.this, CalendarEvent.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("event",event);
+                intent.putExtra("key",mKey);
+                startActivity(intent);
+                CalendarEdit.this.finish();
+                return;
             }
         });
     }

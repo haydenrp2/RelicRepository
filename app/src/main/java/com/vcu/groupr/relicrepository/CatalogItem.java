@@ -23,7 +23,7 @@ public class CatalogItem extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.calendar_event);
+        setContentView(R.layout.catalog_item);
         final Artifact artifact = (Artifact)getIntent().getSerializableExtra("artifact");
         getTextView(R.id.textView1).setText(artifact.getName());
         getTextView(R.id.textView2).setText(artifact.getType());
