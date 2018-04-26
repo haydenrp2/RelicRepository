@@ -16,13 +16,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Calendar extends AppCompatActivity {
 
-    CalendarView mCalendarView;
+    MaterialCalendarView mCalendarView;
     private ListView mEventListView;
     private EventAdapter mEventAdapter;
     private Button mAddEvent;
@@ -37,17 +41,19 @@ public class Calendar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar);
 
-        mCalendarView = (CalendarView) findViewById(R.id.calendarView);
+        mCalendarView = (MaterialCalendarView) findViewById(R.id.calendarView);
         mEventListView = (ListView) findViewById(R.id.calendarList);
         mAddEvent = (Button) findViewById(R.id.addEvent);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
-        List<Event> events = new ArrayList<>();
+        final ArrayList<Event> allEvents = new ArrayList<>();
+        final List<Event> events = new ArrayList<>();
         final List<String> mKeys = new ArrayList<String>();
         mEventsDatabaseReference = mFirebaseDatabase.getReference().child("events");
         mEventAdapter = new EventAdapter(this,R.layout.item_catalog,events);
         mEventListView.setAdapter(mEventAdapter);
+        mCalendarView.setSelectedDate(new Date());
 
         mAddEvent.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -62,34 +68,39 @@ public class Calendar extends AppCompatActivity {
                 String key = dataSnapshot.getKey();
                 Event event = dataSnapshot.getValue(Event.class);
                 if(s == null){
-                    mEventAdapter.insert(event, 0);
+                    allEvents.add(0,event);
                     mKeys.add(0, key);
                 } else {
                     int previousIndex = mKeys.indexOf(s);
                     int nextIndex = previousIndex + 1;
-                    if(nextIndex == mEventAdapter.getCount()){
-                        mEventAdapter.add(event);
+                    if(nextIndex == allEvents.size()){
+                        allEvents.add(event);
                         mKeys.add(key);
                     } else {
-                        mEventAdapter.insert(event,nextIndex);
+                        allEvents.add(nextIndex,event);
                         mKeys.add(nextIndex,key);
                     }
                 }
+                if(parseDate(mCalendarView.getSelectedDate()).equals(event.getDate()))
+                    mEventAdapter.add(event);
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 String key = dataSnapshot.getKey();
                 Event event = dataSnapshot.getValue(Event.class);
                 int index = mKeys.indexOf(key);
-                Event remove = mEventAdapter.getItem(index);
-                mEventAdapter.remove(remove);
-                mEventAdapter.insert(event,index);
+                Event remove = allEvents.get(index);
+                if(mEventAdapter.getPosition(remove) != -1)
+                    mEventAdapter.add(event);
+                allEvents.remove(remove);
+                allEvents.add(index,event);
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 String key = dataSnapshot.getKey();
                 int index = mKeys.indexOf(key);
                 Event event = dataSnapshot.getValue(Event.class);
+                allEvents.remove(event);
                 mEventAdapter.remove(event);
                 mKeys.remove(index);
             }
@@ -108,12 +119,20 @@ public class Calendar extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        mCalendarView.setOnDateChangedListener(new OnDateSelectedListener(){
             @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                String date = (month + 1) + "/" + dayOfMonth + "/" + year;
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                mEventAdapter.clear();
+                String dateString = parseDate(date);
+                for(int i = 0; i < allEvents.size(); i++){
+                    if(allEvents.get(i).getDate().equals(dateString))
+                        mEventAdapter.add(allEvents.get(i));
+                }
             }
         });
+    }
+
+    public String parseDate(CalendarDay calendarDay){
+        return (calendarDay.getMonth() + 1) + "/" + calendarDay.getDay() + "/" + calendarDay.getYear();
     }
 }

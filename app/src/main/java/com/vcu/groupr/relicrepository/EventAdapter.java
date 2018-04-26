@@ -21,16 +21,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
         if (convertView == null) {
             convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_catalog, parent, false);
         }
-        //View calendarView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.calendar, parent, false);'
-        /*CalendarView mCalendarView = (CalendarView) parent.findViewById(R.id.calendarView);
-        Date date = new Date(mCalendarView.getDate());
-        String dateString = date.getMonth()+1+"/"+date.getDay()+"/"+date.getYear();*/
         TextView authorTextView = (TextView) convertView.findViewById(R.id.nameTextView);
         Event event = getItem(position);
-        //if(event.getDate().equals(dateString))
-            authorTextView.setText(event.getOrganizer());
-        /*else
-            convertView = null;*/
+        authorTextView.setText(event.getOrganizer());
         return convertView;
     }
 }
