@@ -25,8 +25,6 @@ public class Catalog extends AppCompatActivity{
     private ArtifactAdapter mArtifactAdapter;
     private Button mAddButton;
 
-
-
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mArtifactsDatabaseReference;
     private ChildEventListener mChildEventListener;

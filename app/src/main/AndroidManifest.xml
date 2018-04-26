@@ -21,6 +21,10 @@
         <activity android:name=".CatalogItem"></activity>
         <activity android:name=".CatalogEdit"></activity>
         <activity android:name=".UserProfile"></activity>
+        <activity android:name=".Calendar"></activity>
+        <activity android:name=".CalendarAdd"></activity>
+        <activity android:name=".CalendarEvent"></activity>
+        <activity android:name=".CalendarEdit"></activity>
     </application>
 
 </manifest>

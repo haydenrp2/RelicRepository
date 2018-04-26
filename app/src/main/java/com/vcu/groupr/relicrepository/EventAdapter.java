@@ -5,16 +5,14 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
+import android.widget.CalendarView;
 import android.widget.TextView;
 
-import com.vcu.groupr.relicrepository.Artifact;
-import com.vcu.groupr.relicrepository.R;
-
+import java.util.Date;
 import java.util.List;
 
-public class ArtifactAdapter extends ArrayAdapter<Artifact> {
-    public ArtifactAdapter(Context context, int resource, List<Artifact> objects) {
+public class EventAdapter extends ArrayAdapter<Event> {
+    public EventAdapter(Context context, int resource, List<Event> objects) {
         super(context, resource, objects);
     }
 
@@ -23,13 +21,9 @@ public class ArtifactAdapter extends ArrayAdapter<Artifact> {
         if (convertView == null) {
             convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_catalog, parent, false);
         }
-
         TextView authorTextView = (TextView) convertView.findViewById(R.id.nameTextView);
-
-        Artifact artifact = getItem(position);
-
-        authorTextView.setText(artifact.getName());
-
+        Event event = getItem(position);
+        authorTextView.setText(event.getOrganizer());
         return convertView;
     }
 }
