@@ -45,20 +45,19 @@ public class MainActivity extends AppCompatActivity {
         mUserProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, )
-
+                Intent intent = new Intent(MainActivity.this, UserProfile.class);
+                startActivity(intent);
 
                 }
-                                              }
+        });
 
-
-                mCatalogButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(MainActivity.this, Catalog.class);
-                        startActivity(intent);
-                    }
-                });
+        mCatalogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Catalog.class);
+                startActivity(intent);
+            }
+        });
         mCalendarButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
