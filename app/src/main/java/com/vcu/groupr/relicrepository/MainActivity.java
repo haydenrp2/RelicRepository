@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mCatalogButton;
     private Button mCalendarButton;
+    private Button mSignOutButton;
+    private Button mUserProfileButton;
 
     //Authentication Variables
     private FirebaseAuth mFirebaseAuth;
@@ -36,16 +38,27 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         mCatalogButton = (Button) findViewById(R.id.catalogButton);
-        Button mSignOutButton = (Button) findViewById(R.id.signOut);
+        mSignOutButton = (Button) findViewById(R.id.signOut);
         mCalendarButton = (Button) findViewById(R.id.calendarButton);
+        mUserProfileButton = (Button) findViewById(R.id.mUserProfileButton);
 
-        mCatalogButton.setOnClickListener(new View.OnClickListener(){
+        mUserProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,Catalog.class);
-                startActivity(intent);
-            }
-        });
+                Intent intent = new Intent(MainActivity.this, )
+
+
+                }
+                                              }
+
+
+                mCatalogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MainActivity.this, Catalog.class);
+                        startActivity(intent);
+                    }
+                });
         mCalendarButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -66,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     //user is signed in
+
                 } else {
                     //user is signed out
                     //onSignedOutCleanup();
@@ -93,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (resultCode == RESULT_CANCELED) {
             Toast.makeText(this, "Sign in Canceled", Toast.LENGTH_SHORT).show();
             finish();
+
 
                 }
             }
