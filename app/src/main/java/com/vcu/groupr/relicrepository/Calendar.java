@@ -1,6 +1,7 @@
 package com.vcu.groupr.relicrepository;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,7 @@ public class Calendar extends AppCompatActivity {
     private DatabaseReference mEventsDatabaseReference;
     private ChildEventListener mChildEventListener;
     private FirebaseListAdapter<Event> adapter;
+    private ArrayList<CalendarDay> calendarDays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +52,13 @@ public class Calendar extends AppCompatActivity {
         final ArrayList<Event> allEvents = new ArrayList<>();
         final List<Event> events = new ArrayList<>();
         final List<String> mKeys = new ArrayList<String>();
+        calendarDays = new ArrayList<>();
         mEventsDatabaseReference = mFirebaseDatabase.getReference().child("events");
         mEventAdapter = new EventAdapter(this,R.layout.item_catalog,events);
         mEventListView.setAdapter(mEventAdapter);
         mCalendarView.setSelectedDate(new Date());
+        final EventDecorator eventDecorator = new EventDecorator(Color.RED, calendarDays);
+        mCalendarView.addDecorator(eventDecorator);
 
         mAddEvent.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -83,6 +88,13 @@ public class Calendar extends AppCompatActivity {
                 }
                 if(parseDate(mCalendarView.getSelectedDate()).equals(event.getDate()))
                     mEventAdapter.add(event);
+                Date date = new Date(
+                        Integer.parseInt(event.getDate().substring(5))-1900,
+                        Integer.parseInt(event.getDate().substring(0,1))-1,
+                        Integer.parseInt(event.getDate().substring(2,4)));
+                calendarDays.add(new CalendarDay(date));
+                eventDecorator.setDates(calendarDays);
+                mCalendarView.invalidateDecorators();
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -90,10 +102,24 @@ public class Calendar extends AppCompatActivity {
                 Event event = dataSnapshot.getValue(Event.class);
                 int index = mKeys.indexOf(key);
                 Event remove = allEvents.get(index);
-                if(mEventAdapter.getPosition(remove) != -1)
+                if(mEventAdapter.getPosition(remove) != -1) {
+                    mEventAdapter.remove(remove);
                     mEventAdapter.add(event);
+                }
                 allEvents.remove(remove);
                 allEvents.add(index,event);
+                Date removeDate = new Date(
+                        Integer.parseInt(remove.getDate().substring(5))-1900,
+                        Integer.parseInt(remove.getDate().substring(0,1))-1,
+                        Integer.parseInt(remove.getDate().substring(2,4)));
+                Date eventDate = new Date(
+                        Integer.parseInt(event.getDate().substring(5))-1900,
+                        Integer.parseInt(event.getDate().substring(0,1))-1,
+                        Integer.parseInt(event.getDate().substring(2,4)));
+                calendarDays.remove(new CalendarDay(removeDate));
+                calendarDays.add(new CalendarDay(eventDate));
+                eventDecorator.setDates(calendarDays);
+                mCalendarView.invalidateDecorators();
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
@@ -103,6 +129,13 @@ public class Calendar extends AppCompatActivity {
                 allEvents.remove(event);
                 mEventAdapter.remove(event);
                 mKeys.remove(index);
+                Date date = new Date(
+                        Integer.parseInt(event.getDate().substring(5))-1900,
+                        Integer.parseInt(event.getDate().substring(0,1))-1,
+                        Integer.parseInt(event.getDate().substring(2,4)));
+                calendarDays.remove(new CalendarDay(date));
+                eventDecorator.setDates(calendarDays);
+                mCalendarView.invalidateDecorators();
             }
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
             public void onCancelled(DatabaseError databaseError) {}
@@ -115,7 +148,7 @@ public class Calendar extends AppCompatActivity {
                 Event event = (Event) parent.getItemAtPosition(position);
                 Intent intent = new Intent(Calendar.this, CalendarEvent.class);
                 intent.putExtra("event",event);
-                intent.putExtra("key",mKeys.get(position));
+                intent.putExtra("key",mKeys.get(allEvents.indexOf(event)));
                 startActivity(intent);
             }
         });

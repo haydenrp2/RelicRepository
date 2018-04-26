@@ -17,6 +17,10 @@ public class EventDecorator implements DayViewDecorator {
         this.dates = new HashSet<>(dates);
     }
 
+    public void setDates(Collection<CalendarDay> dates){
+        this.dates = new HashSet<>(dates);
+    }
+
     @Override
     public boolean shouldDecorate(CalendarDay day) {
         return dates.contains(day);
