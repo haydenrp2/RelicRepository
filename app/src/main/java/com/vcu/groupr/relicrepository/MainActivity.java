@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         mCatalogButton = (Button) findViewById(R.id.catalogButton);
         Button mSignOutButton = (Button) findViewById(R.id.signOut);
-
-
         mCalendarButton = (Button) findViewById(R.id.calendarButton);
 
         mCatalogButton.setOnClickListener(new View.OnClickListener(){
@@ -55,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        mSignOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AuthUI.getInstance().signOut(v.getContext());
+            }
+        });
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -79,20 +84,32 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //@Override
-    //public void onActivityResult(int requestCode, int resultCode,  Intent data) {
-      //  super.onActivityResult(requestCode, resultCode, data);
-    //}
-
     @Override
-    protected void onPause() {
-        super.onPause();
-        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-    }
+    public void onActivityResult(int requestCode, int resultCode,  Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(this, "Sign in Canceled", Toast.LENGTH_SHORT).show();
+            finish();
+
+                }
+            }
+        }
+
+
+
+
 
     @Override
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
     }
 }
