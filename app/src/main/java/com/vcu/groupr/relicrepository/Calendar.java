@@ -23,14 +23,14 @@ import java.util.List;
 public class Calendar extends AppCompatActivity {
 
     CalendarView mCalendarView;
-    private ListView mArtifactListView;
-    private ArtifactAdapter mArtifactAdapter;
+    private ListView mEventListView;
+    private EventAdapter mEventAdapter;
     private Button mAddEvent;
 
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mArtifactsDatabaseReference;
+    private DatabaseReference mEventsDatabaseReference;
     private ChildEventListener mChildEventListener;
-    private FirebaseListAdapter<Artifact> adapter;
+    private FirebaseListAdapter<Event> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,21 +38,21 @@ public class Calendar extends AppCompatActivity {
         setContentView(R.layout.calendar);
 
         mCalendarView = (CalendarView) findViewById(R.id.calendarView);
-        mArtifactListView = (ListView) findViewById(R.id.calendarList);
+        mEventListView = (ListView) findViewById(R.id.calendarList);
         mAddEvent = (Button) findViewById(R.id.addEvent);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
-        List<Artifact> artifacts = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
         final List<String> mKeys = new ArrayList<String>();
-        mArtifactsDatabaseReference = mFirebaseDatabase.getReference().child("events");
-        mArtifactAdapter = new ArtifactAdapter(this,R.layout.item_catalog,artifacts);
-        mArtifactListView.setAdapter(mArtifactAdapter);
+        mEventsDatabaseReference = mFirebaseDatabase.getReference().child("events");
+        mEventAdapter = new EventAdapter(this,R.layout.item_catalog,events);
+        mEventListView.setAdapter(mEventAdapter);
 
         mAddEvent.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Calendar.this,CatalogAdd.class);
+                Intent intent = new Intent(Calendar.this,CalendarAdd.class);
                 startActivity(intent);
             }
         });
@@ -60,18 +60,18 @@ public class Calendar extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String key = dataSnapshot.getKey();
-                Artifact artifact = dataSnapshot.getValue(Artifact.class);
+                Event event = dataSnapshot.getValue(Event.class);
                 if(s == null){
-                    mArtifactAdapter.insert(artifact, 0);
+                    mEventAdapter.insert(event, 0);
                     mKeys.add(0, key);
                 } else {
                     int previousIndex = mKeys.indexOf(s);
                     int nextIndex = previousIndex + 1;
-                    if(nextIndex == mArtifactAdapter.getCount()){
-                        mArtifactAdapter.add(artifact);
+                    if(nextIndex == mEventAdapter.getCount()){
+                        mEventAdapter.add(event);
                         mKeys.add(key);
                     } else {
-                        mArtifactAdapter.insert(artifact,nextIndex);
+                        mEventAdapter.insert(event,nextIndex);
                         mKeys.add(nextIndex,key);
                     }
                 }
@@ -79,31 +79,32 @@ public class Calendar extends AppCompatActivity {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 String key = dataSnapshot.getKey();
-                Artifact artifact = dataSnapshot.getValue(Artifact.class);
+                Event event = dataSnapshot.getValue(Event.class);
                 int index = mKeys.indexOf(key);
-                Artifact remove = mArtifactAdapter.getItem(index);
-                mArtifactAdapter.remove(remove);
-                mArtifactAdapter.insert(artifact,index);
+                Event remove = mEventAdapter.getItem(index);
+                mEventAdapter.remove(remove);
+                mEventAdapter.insert(event,index);
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 String key = dataSnapshot.getKey();
                 int index = mKeys.indexOf(key);
-                Artifact artifact = dataSnapshot.getValue(Artifact.class);
-                mArtifactAdapter.remove(artifact);
+                Event event = dataSnapshot.getValue(Event.class);
+                mEventAdapter.remove(event);
                 mKeys.remove(index);
             }
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
             public void onCancelled(DatabaseError databaseError) {}
         };
-        mArtifactsDatabaseReference.addChildEventListener(mChildEventListener);
+        mEventsDatabaseReference.addChildEventListener(mChildEventListener);
 
-        mArtifactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mEventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Artifact artifact = (Artifact) parent.getItemAtPosition(position);
+                Event event = (Event) parent.getItemAtPosition(position);
                 Intent intent = new Intent(Calendar.this, CalendarEvent.class);
-                intent.putExtra("artifact",artifact);
+                System.out.println(event == null);
+                intent.putExtra("event",event);
                 intent.putExtra("key",mKeys.get(position));
                 startActivity(intent);
             }

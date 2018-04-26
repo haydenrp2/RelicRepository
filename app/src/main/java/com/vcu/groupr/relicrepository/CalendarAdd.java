@@ -19,7 +19,7 @@ public class CalendarAdd extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.catalog_data_entry);
+        setContentView(R.layout.calendar_data_entry);
 
         mSubmitButton = (Button) findViewById(R.id.submitButton);
 

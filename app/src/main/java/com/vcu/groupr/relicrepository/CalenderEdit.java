@@ -14,42 +14,36 @@ public class CalenderEdit extends AppCompatActivity {
 
     private Button mSubmitButton;
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mArtifactsDatabaseReference;
+    private DatabaseReference mEventsDatabaseReference;
     private String mKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.catalog_data_entry);
-        final Artifact artifact = (Artifact) getIntent().getSerializableExtra("artifact");
-        getTextView(R.id.artifactName).setText(artifact.getName());
-        getTextView(R.id.artifactType).setText(artifact.getType());
-        getTextView(R.id.description).setText(artifact.getDescription());
-        getTextView(R.id.artifactAge).setText(Integer.toString(artifact.getAge()));
-        getTextView(R.id.locationFound).setText(artifact.getLocation());
-        getTextView(R.id.date).setText(artifact.getDate());
-        getTextView(R.id.price).setText(Double.toString(artifact.getPrice()));
-        getTextView(R.id.url).setText(artifact.getUrl());
+        setContentView(R.layout.calendar_data_entry);
+        final Event event = (Event) getIntent().getSerializableExtra("event");
+        getTextView(R.id.organizer).setText(event.getOrganizer());
+        getTextView(R.id.date).setText(event.getDate());
+        getTextView(R.id.time).setText(event.getTime());
+        getTextView(R.id.location).setText(event.getLocation());
+        getTextView(R.id.notes).setText(event.getNotes());
 
         mSubmitButton = (Button) findViewById(R.id.submitButton);
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mArtifactsDatabaseReference = mFirebaseDatabase.getReference().child("artifacts");
+        mEventsDatabaseReference = mFirebaseDatabase.getReference().child("events");
         mKey = getIntent().getStringExtra("key");
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = readField(R.id.artifactName);
-                String type = readField(R.id.artifactType);
-                String description = readField(R.id.description);
-                int age = Integer.parseInt(readField(R.id.artifactAge));
-                String location = readField(R.id.locationFound);
+                String organizer = readField(R.id.organizer);
                 String date = readField(R.id.date);
-                double price = Double.parseDouble(readField(R.id.price));
-                String url = readField(R.id.url);
-                Artifact artifact = new Artifact(name,type,description,age,location,date,price,url);
-                mArtifactsDatabaseReference.child(mKey).removeValue();
-                mArtifactsDatabaseReference.push().setValue(artifact);
+                String time = readField(R.id.time);
+                String location = readField(R.id.location);
+                String notes = readField(R.id.notes);
+                Event event = new Event(organizer,date,time,location,notes);
+                mEventsDatabaseReference.child(mKey).removeValue();
+                mEventsDatabaseReference.push().setValue(event);
                 onBackPressed();
             }
         });
